@@ -154,10 +154,6 @@ int main(void)
 }
 
 
-void SysTick_Handler(void)
-{
-  HAL_IncTick();
-}
 
 /**
   * @brief  Switch the PLL source from MSI  to HSI, and select the PLL as SYSCLK

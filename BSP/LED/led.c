@@ -1,5 +1,7 @@
 #include "led.h"
 #include <stm32l4xx_hal.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 #define NB_LED_PER_EDGE (9)
 
@@ -78,7 +80,7 @@ void led_blinkTest(void)
         {
             HAL_GPIO_WritePin(cathodeLedIOtable[k].port, cathodeLedIOtable[k].pin, GPIO_PIN_RESET);
             HAL_GPIO_WritePin(anodeLedIOtable[a].port, anodeLedIOtable[a].pin, GPIO_PIN_SET);
-            HAL_Delay(10);
+            vTaskDelay(10);
             HAL_GPIO_WritePin(cathodeLedIOtable[k].port, cathodeLedIOtable[k].pin, GPIO_PIN_SET);
             HAL_GPIO_WritePin(anodeLedIOtable[a].port, anodeLedIOtable[a].pin, GPIO_PIN_RESET);
         }

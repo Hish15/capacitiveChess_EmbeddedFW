@@ -1,6 +1,8 @@
 #include "capacitive.h"
 
 #include <stm32l4xx_hal.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 /**
  * @brief This is just to remove the magic "16"
@@ -194,7 +196,7 @@ bool capacitive_getADCvalue(uint8_t capChannel, uint16_t *ADCrawMeas)
 
     // 1) charge the correct TOP plate to VCC
     HAL_GPIO_WritePin(topIOtable[capChannel].port, topIOtable[capChannel].pin, GPIO_PIN_SET);
-    HAL_Delay(OPAMP_STABILIZATION_DELAY_MS);
+    vTaskDelay(OPAMP_STABILIZATION_DELAY_MS);
     // 2) discharge the sample and hold cap by making a measurement to GND
     // this is made by converting the channel while pin is configured as output
     // doing 2 measurements gives more reproductible results

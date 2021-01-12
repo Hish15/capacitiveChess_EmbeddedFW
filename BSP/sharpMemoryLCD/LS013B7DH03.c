@@ -3,6 +3,8 @@
 #include <stm32l4xx_hal.h>
 #include <string.h>
 #include "fonts.h"
+#include <FreeRTOS.h>
+#include <task.h>
 
 /** Update pixel data */
 #define CMD_DATA_UPDATE (0x01)
@@ -97,7 +99,7 @@ static bool LCDupdateDisplay(uint8_t screenLine, uint8_t *pixelBuf, uint16_t nbB
     {
         reorderBitsToScreen(pixelBuf, nbBytes);
         LCDslaveSelect(true);
-        HAL_Delay(1); //TODO this delay could be much less, but need a delay_us function
+        vTaskDelay(1); //TODO this delay could be much less, but need a delay_us function
         uint8_t cmd_buffer[2] = {CMD_DATA_UPDATE, 0x00};
         for(uint16_t i=0; i<nbScreenLines ; i++)
         {
@@ -120,7 +122,7 @@ static bool LCDupdateDisplay(uint8_t screenLine, uint8_t *pixelBuf, uint16_t nbB
         {
             returnSuccess= false;
         }
-        HAL_Delay(1); //TODO this delay could be much less, but need a delay_us function
+        vTaskDelay(1); //TODO this delay could be much less, but need a delay_us function
         LCDslaveSelect(false);
     }
     else

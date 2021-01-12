@@ -6,6 +6,8 @@
 #include "led.h"
 #include "SMPS.h"
 #include "SEGGER_RTT.h"
+#include <FreeRTOS.h>
+#include <task.h>
 #include <stdio.h>
 
 #define NB_ADC_MEAS_AVG_CALIB (64)
@@ -13,10 +15,11 @@
 
 static void SystemClockHSI_Config(void);
 static void Error_Handler(void);
+static void mainTask(void *arg);
 
-int main(void)
+
+static void mainTask(void *arg)
 {
-    HAL_Init();
     BSP_SMPS_Init(0);
     // connect VDD12 after 100ms
     BSP_SMPS_Supply_Enable(100,0);
@@ -25,30 +28,34 @@ int main(void)
     __HAL_RCC_PWR_CLK_ENABLE();
     HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE2);
 
-    HAL_Delay(100);
+    vTaskDelay(1);
     sharpMemoryLCD_init();
-    HAL_Delay(100);
+    vTaskDelay(100);
 
 
 
+
+    led_init();
+    led_blinkTest();
 
     //TODO test the buttons
     buttons_init();
     //TODO test the SMPS
     //TODO test the USB
     capacitive_init();
-    HAL_Delay(500); //ensure all OPAMPS are ON
+    vTaskDelay(500); //ensure all OPAMPS are ON
     //TODO test the EPD screen
     //TODO write of find some delay function because it will be needed
 
 
-    led_init();
-    led_blinkTest();
+
+
+
 
     SEGGER_RTT_WriteString(0, "-- Board startup --\r\n");
 
     sharpMemoryLCD_printTextLine(0, "calibrating", 11);
-    HAL_Delay(10);
+    vTaskDelay(10);
 
     uint16_t rawADC;
     uint16_t rawValsCalib[NB_CAP_CHAN][NB_ADC_MEAS_AVG_CALIB];
@@ -83,7 +90,7 @@ int main(void)
             SEGGER_RTT_printf(0, "%d ",rawValsCalib[chan][i]);
         }
         SEGGER_RTT_WriteString(0, "\r\n");
-        HAL_Delay(1);
+        vTaskDelay(1);
     }
 
     char printBuffer[11];
@@ -93,9 +100,9 @@ int main(void)
         // one line and one colums value per screen line
         sprintf(printBuffer, "%1i %4i %4i", i, calibs[i], calibs[i+NB_CAP_CHAN/2]);
         sharpMemoryLCD_printTextLine(i, printBuffer, 11);
-        HAL_Delay(10);
+        vTaskDelay(10);
     }
-    HAL_Delay(10000);
+    vTaskDelay(10000);
 
     while(1)
     {
@@ -132,7 +139,7 @@ int main(void)
             // one line and one colums value per screen line
             sprintf(printBuffer, "%1i %4i %4i", i, meanMeas[i]-calibs[i], meanMeas[i+NB_CAP_CHAN/2]-calibs[i+NB_CAP_CHAN/2]);
             sharpMemoryLCD_printTextLine(i, printBuffer, 11);
-            HAL_Delay(10);
+            vTaskDelay(10);
         }
 
 
@@ -143,13 +150,22 @@ int main(void)
         //uint8_t r = buttons_isPressed(BUTTON_RIGHT) ? 1:0;
         //sprintf(printBuffer, "%i %i %i %i %i",c,u,d,l,r);
         //sharpMemoryLCD_printTextLine(5, "C U D L R", 11);
-        //HAL_Delay(10);
+        //vTaskDelay(10);
         //sharpMemoryLCD_printTextLine(6, printBuffer, 11);
-        //HAL_Delay(10);
+        //vTaskDelay(10);
 
-        HAL_Delay(50);
+        vTaskDelay(50);
     }
+}
 
+int main(void)
+{
+    HAL_Init();
+
+    xTaskCreate(mainTask, "mainTask", configMINIMAL_STACK_SIZE * 16, NULL, tskIDLE_PRIORITY + 1, NULL);
+    vTaskStartScheduler();
+
+    while(1);
     return 0;
 }
 

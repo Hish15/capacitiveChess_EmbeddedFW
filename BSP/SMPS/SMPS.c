@@ -1,6 +1,8 @@
 #include "SMPS.h"
 
 #include <stm32l4xx_hal.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 
 #define PORT_SMPS               GPIOC
@@ -34,7 +36,7 @@ uint32_t BSP_SMPS_DeInit(void)
   /* Disable SMPS SWITCH */
   HAL_GPIO_WritePin(PORT_SMPS, PIN_SMPS_SWITCH_ENABLE, GPIO_PIN_RESET);
 
-  HAL_Delay(1);
+  vTaskDelay(1);
 
   /* Disable SMPS */
 //  HAL_GPIO_WritePin(PORT_SMPS, PIN_SMPS_ENABLE, GPIO_PIN_RESET);
@@ -129,7 +131,7 @@ uint32_t BSP_SMPS_Enable(uint32_t Delay, uint32_t Power_Good_Check)
   /* Delay upon request */
   if (Delay != 0)
   {
-    HAL_Delay(Delay);
+    vTaskDelay(Delay);
   }
 //
 //  /* CHECK POWER GOOD or NOT */
@@ -172,7 +174,7 @@ uint32_t BSP_SMPS_Supply_Enable(uint32_t Delay, uint32_t Power_Good_Check)
 
   if (Delay != 0)
   {
-    HAL_Delay(Delay);
+    vTaskDelay(Delay);
   }
   /* CHECK POWER GOOD or NOT */
   //if (Power_Good_Check != 0)

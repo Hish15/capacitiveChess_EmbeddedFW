@@ -24,8 +24,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: textbook/git-checkout-submodule-action@master
+        with:
+          submodules: true
 
-      # Runs a single command using the runners shell
-      - name: docker-compose up
-        run: docker-compose up
+      - uses: whoan/docker-build-with-cache-action@v5
+        with:
+          compose_file: docker-compose.yml
+          push_image_and_stages: false

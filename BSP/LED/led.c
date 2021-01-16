@@ -106,11 +106,11 @@ void led_blinkTest(void)
 void led_squareTask(void *arg)
 {
     static uint8_t alternateColLedOn;
-    led_squareTaskInfo.led_STI_mutexHandle = xSemaphoreCreateMutex();
 
     while(1)
     {
-        xSemaphoreTake(led_squareTaskInfo.led_STI_mutexHandle, 0);
+        // wait for mutex infinite time
+        xSemaphoreTake(led_squareTaskInfo.led_STI_mutexHandle, portMAX_DELAY);
 
         led_allOff();
 
@@ -134,9 +134,9 @@ void led_squareTask(void *arg)
         }
         else
         {
-            //suspend ourself as we do not need to blink the LED
             xSemaphoreGive(led_squareTaskInfo.led_STI_mutexHandle);
             // possible race condition here if task priority are not good AND vTaskResume called only once
+            // suspend ourself as we do not need to blink the LED
             vTaskSuspend(NULL);
         }
         // blink LED after short delay

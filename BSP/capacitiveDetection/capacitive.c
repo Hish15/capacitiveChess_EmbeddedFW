@@ -1,8 +1,9 @@
 #include "capacitive.h"
-
+#include "led.h"
 #include <stm32l4xx_hal.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <semphr.h>
 
 /**
  * @brief This is just to remove the magic "16"
@@ -208,6 +209,9 @@ bool capacitive_getADCvalue(uint8_t capChannel, uint16_t *ADCrawMeas)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Pin = topIOtable[capChannel].pin;
+    // avoid LED switching during high impedance states
+    // wait for mutex infinite time
+    xSemaphoreTake(led_squareTaskInfo.led_STI_mutexHandle, portMAX_DELAY);
     HAL_GPIO_Init(topIOtable[capChannel].port, &GPIO_InitStruct);
     // 4) sample and hold the TOP plate (will discharge "parasitic" cap into sample and hold)
     resultSuccess &= convertADCchannel(ADCrawMeas, topIOtable[capChannel].adcChan);
@@ -215,6 +219,7 @@ bool capacitive_getADCvalue(uint8_t capChannel, uint16_t *ADCrawMeas)
     // pin top is output
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     HAL_GPIO_Init(topIOtable[capChannel].port, &GPIO_InitStruct);
+    xSemaphoreGive(led_squareTaskInfo.led_STI_mutexHandle);
     // pin top LOW level
     HAL_GPIO_WritePin(topIOtable[capChannel].port, topIOtable[capChannel].pin, GPIO_PIN_RESET);
 

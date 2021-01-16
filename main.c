@@ -104,13 +104,8 @@ static void mainTask(void *arg)
     }
     vTaskDelay(500);
 
-    // Do NOT take mutex for the init as task is not created yet and mutex not init
-    led_squareTaskInfo.led_STI_raw = 2;
-    led_squareTaskInfo.led_STI_col = 0;
-    led_squareTaskInfo.led_STI_isOn = true;
 
-    TaskHandle_t led_squareTaskHandle;
-    xTaskCreate(led_squareTask, "led_squareTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, &led_squareTaskHandle);
+    xTaskCreate(led_squareTask, "led_squareTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
 
 
     while(1)
@@ -170,6 +165,15 @@ static void mainTask(void *arg)
 int main(void)
 {
     HAL_Init();
+
+    led_squareTaskInfo.led_STI_mutexHandle = xSemaphoreCreateMutex();
+    // wait for mutex infinite time
+    xSemaphoreTake(led_squareTaskInfo.led_STI_mutexHandle, portMAX_DELAY);
+    led_squareTaskInfo.led_STI_raw = 5;
+    led_squareTaskInfo.led_STI_col = 2;
+    led_squareTaskInfo.led_STI_isOn = true;
+    xSemaphoreGive(led_squareTaskInfo.led_STI_mutexHandle);
+
     xTaskCreate(mainTask, "mainTask", configMINIMAL_STACK_SIZE*8, NULL, tskIDLE_PRIORITY + 1, NULL);
     vTaskStartScheduler();
 

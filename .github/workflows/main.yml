@@ -20,19 +20,20 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: build
-        run: docker-compose up
-
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
           path: /var/lib/docker
           key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: build
+        run: docker-compose up
+

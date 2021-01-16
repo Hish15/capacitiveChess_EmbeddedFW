@@ -169,7 +169,7 @@ int main(void)
     led_squareTaskInfo.led_STI_mutexHandle = xSemaphoreCreateMutex();
     // wait for mutex infinite time
     xSemaphoreTake(led_squareTaskInfo.led_STI_mutexHandle, portMAX_DELAY);
-    led_squareTaskInfo.led_STI_raw = 5;
+    led_squareTaskInfo.led_STI_row = 5;
     led_squareTaskInfo.led_STI_col = 2;
     led_squareTaskInfo.led_STI_isOn = true;
     xSemaphoreGive(led_squareTaskInfo.led_STI_mutexHandle);

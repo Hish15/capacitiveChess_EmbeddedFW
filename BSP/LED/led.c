@@ -116,7 +116,7 @@ void led_squareTask(void *arg)
 
         if(led_squareTaskInfo.led_STI_isOn)
         {
-            uint8_t raw = led_squareTaskInfo.led_STI_raw;
+            uint8_t raw = led_squareTaskInfo.led_STI_row;
             uint8_t col = led_squareTaskInfo.led_STI_col;
             if(alternateColLedOn != 0)
             {
@@ -129,7 +129,6 @@ void led_squareTask(void *arg)
             alternateColLedOn++;
             alternateColLedOn %= 2;
 
-            // TODO if needed only: wait 1ms after LED changes state before releasing mutex to avoid switching noise
             xSemaphoreGive(led_squareTaskInfo.led_STI_mutexHandle);
         }
         else

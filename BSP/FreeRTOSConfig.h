@@ -45,6 +45,7 @@
  #include <stdint.h>
  extern uint32_t SystemCoreClock;
 #endif
+#include "stm32l4xx_hal_conf.h" // to be able to use assert_param
 
 /*  CMSIS-RTOSv2 defines 56 levels of priorities. To be able to use them
  *  all and avoid application misbehavior, configUSE_PORT_OPTIMISED_TASK_SELECTION
@@ -146,7 +147,7 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); for( ;; ); }
+#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); assert_param(0); for( ;; ); }
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
    standard names. */

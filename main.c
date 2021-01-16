@@ -32,25 +32,12 @@ static void mainTask(void *arg)
     sharpMemoryLCD_init();
     vTaskDelay(100);
 
-
-
-
     led_init();
     led_blinkTest();
 
-    //TODO test the buttons
     buttons_init();
-    //TODO test the SMPS
-    //TODO test the USB
     capacitive_init();
     vTaskDelay(500); //ensure all OPAMPS are ON
-    //TODO test the EPD screen
-    //TODO write of find some delay function because it will be needed
-
-
-
-
-
 
     SEGGER_RTT_WriteString(0, "-- Board startup --\r\n");
 
@@ -146,17 +133,6 @@ static void mainTask(void *arg)
             vTaskDelay(10);
         }
 
-
-        //uint8_t c = buttons_isPressed(BUTTON_CENTER) ? 1:0;
-        //uint8_t u = buttons_isPressed(BUTTON_UP) ? 1:0;
-        //uint8_t d = buttons_isPressed(BUTTON_DOWN) ? 1:0;
-        //uint8_t l = buttons_isPressed(BUTTON_LEFT) ? 1:0;
-        //uint8_t r = buttons_isPressed(BUTTON_RIGHT) ? 1:0;
-        //sprintf(printBuffer, "%i %i %i %i %i",c,u,d,l,r);
-        //sharpMemoryLCD_printTextLine(5, "C U D L R", 11);
-        //vTaskDelay(10);
-        //sharpMemoryLCD_printTextLine(6, printBuffer, 11);
-        //vTaskDelay(10);
 
         vTaskDelay(50);
     }

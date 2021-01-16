@@ -20,7 +20,10 @@ add_library(led INTERFACE)
 target_sources(led INTERFACE LED/led.c)
 target_include_directories(led INTERFACE LED)
 target_link_libraries(led INTERFACE
-    HAL::STM32::L4::GPIO)
+    HAL::STM32::L4::GPIO
+    FreeRTOS::Timers
+    FreeRTOS::Heap::1
+    FreeRTOS::ARM_CM4F)
 
 add_library(buttons INTERFACE)
 target_sources(buttons INTERFACE buttons/buttons.c)

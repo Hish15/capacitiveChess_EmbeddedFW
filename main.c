@@ -102,7 +102,16 @@ static void mainTask(void *arg)
         sharpMemoryLCD_printTextLine(i, printBuffer, 11);
         vTaskDelay(10);
     }
-    vTaskDelay(10000);
+    vTaskDelay(500);
+
+    // Do NOT take mutex for the init as task is not created yet and mutex not init
+    led_squareTaskInfo.led_STI_raw = 2;
+    led_squareTaskInfo.led_STI_col = 0;
+    led_squareTaskInfo.led_STI_isOn = true;
+
+    TaskHandle_t led_squareTaskHandle;
+    xTaskCreate(led_squareTask, "led_squareTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, &led_squareTaskHandle);
+
 
     while(1)
     {
@@ -161,8 +170,7 @@ static void mainTask(void *arg)
 int main(void)
 {
     HAL_Init();
-
-    xTaskCreate(mainTask, "mainTask", configMINIMAL_STACK_SIZE * 16, NULL, tskIDLE_PRIORITY + 1, NULL);
+    xTaskCreate(mainTask, "mainTask", configMINIMAL_STACK_SIZE*8, NULL, tskIDLE_PRIORITY + 1, NULL);
     vTaskStartScheduler();
 
     while(1);
@@ -272,7 +280,8 @@ static void Error_Handler(void)
 
 void assert_failed(uint8_t *file, uint32_t line)
 {
-    // TODO print on screen before dying in while
+    sharpMemoryLCD_printTextLine(0,"  ASSERT", 8);
+    // TODO print file and line
     while(1)
     {
         ;

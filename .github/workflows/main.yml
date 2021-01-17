@@ -57,5 +57,5 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Docker mount and run
-        run: docker run -it --mount type=bind,source="$(pwd)",target=/usr/src/app capacitive-chess-builder
+        run: docker run --mount type=bind,source="$(pwd)",target=/usr/src/app capacitive-chess-builder
 

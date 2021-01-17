@@ -50,3 +50,4 @@ jobs:
           tags: thing
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+      - run: docker run thing

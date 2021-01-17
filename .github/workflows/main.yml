@@ -8,6 +8,11 @@ jobs:
   github-cache:
     runs-on: ubuntu-latest
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      -
+        uses: actions/checkout@v2
+        with:
+          submodules: true
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

@@ -1,6 +1,6 @@
 version: "3.9"
 services:
   cmake-build:
-    image: rushmash/gcc-arm-embedded-docker@sha256:affe1564eef00020791c65e75042c3ae04b7d8f0cdd7b51b360b46550fa82f2b
+    build: .
     volumes:
         - .:/usr/src/app

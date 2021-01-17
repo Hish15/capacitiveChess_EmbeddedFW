@@ -54,6 +54,6 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Build Source Code
-        run: docker-compose up
+        run: docker run --mount type=bind,source="$(pwd)",target=/srv/src/app capacitive-chess-builder 
 
 

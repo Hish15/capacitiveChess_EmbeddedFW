@@ -50,13 +50,12 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: false
           tags:  capacitive-chess-builder
-          cache: enabled
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-      - name: Docker compose stage
-        run: docker-compose up
+      - name: Docker mount and run
+        run: docker run -it --mount type=bind,source="$(pwd)",target=/usr/src/app capacitive-chess-builder
 

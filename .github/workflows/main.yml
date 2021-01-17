@@ -46,7 +46,6 @@ jobs:
         with:
           context: ./
           file: ./Dockerfile
-          load: true
           push: false
           tags: thing
           cache-from: type=local,src=/tmp/.buildx-cache

@@ -5,6 +5,14 @@ on:
     branches: [ develop ]
 
 jobs:
+  docker-example:
+    runs-on: ubuntu-latest
+    services:
+      armgcc:
+        image: rushmash/gcc-arm-embedded-docker:latest 
+        volumes:
+            - .:/usr/src/app
+
   github-cache:
     runs-on: ubuntu-latest
     steps:
@@ -47,6 +55,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: false
+          outputs: image
           tags: thing
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
